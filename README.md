@@ -5,7 +5,8 @@ quantitative panels in *A cortex-wide self-consistent manifold for a body–envi
 reference frame*.
 
 The included workflows generate panels from Figures 2–6 and Extended Data Figures
-7 and 9–11. They cover example neural activity, encoding, regional decoding,
+7–11. They cover example neural activity, encoding, ridge-regression contribution
+maps, regional decoding,
 frontal–parietal coordination, shared population components, manifold geometry,
 persistent homology, and region-restricted analyses.
 
