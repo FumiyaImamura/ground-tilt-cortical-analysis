@@ -21,6 +21,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = REPO_ROOT / "source_data" / "contribution_maps" / "ridge_regression_maps.npz"
 OUT_PANELS = REPO_ROOT / "outputs" / "contribution_maps" / "panels"
 
+# CSP.plotScaleBar calibrates the atlas image against its physical dimensions:
+#   x pixels/mm = 911 * (1.77 / 18.89)
+#   y pixels/mm = 904 * (1.77 / 15.02)
+# MATLAB then applies daspect([x_pixels_per_mm / y_pixels_per_mm, 1, 1]).
+# Matplotlib's numeric aspect is the displayed y-unit/x-unit ratio, so the
+# same value reproduces the manuscript cortical geometry.
+CORTICAL_DATA_ASPECT = (911.0 / 18.89) / (904.0 / 15.02)
+
 
 def load_source() -> dict[str, np.ndarray]:
     with np.load(SOURCE) as archive:
@@ -82,7 +90,7 @@ def draw_map(
         source["atlas_mask"],
         colors,
     )
-    ax.imshow(rgb, interpolation="nearest")
+    ax.imshow(rgb, interpolation="nearest", aspect=CORTICAL_DATA_ASPECT)
     ax.set_title(title, fontsize=9, fontweight="normal", pad=3)
     ax.set_axis_off()
     colorbar = fig.colorbar(
