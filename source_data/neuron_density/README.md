@@ -5,3 +5,6 @@ density kernel, and the cortical atlas mask used by the panel renderer.
 
 Generate the location and density panels with
 `workflows/neuron_density/render_figure_2c.py`.
+
+The renderer applies the calibrated cortical-image data aspect ratio used by
+`CSP.plotScaleBar` in the original MATLAB workflow.
