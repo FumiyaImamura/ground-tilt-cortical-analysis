@@ -11,6 +11,7 @@ histology, photographs, and other non-computational artwork are not listed.
 | Fig. 2c | Recorded-neuron locations and density | `workflows/neuron_density/render_figure_2c.py` | `source_data/neuron_density/` |
 | Fig. 2d | Example neuronal, platform, and toe trajectories | `workflows/example_activity/render_figure_2d.py` | `source_data/example_activity/` |
 | Fig. 2i | Example encoding-model fits | `workflows/encoding_examples/render_figure_2i.py` | `source_data/encoding_examples/` |
+| Fig. 2k,l,n | Ridge-regression contribution maps for body parts, ground tilt, and eigenpostures | `workflows/contribution_maps/render_ridge_regression_maps.py` | `source_data/contribution_maps/` |
 | Fig. 3a–e | Regional population decoding | `workflows/decoding/render_figure_3a_e.py` | `source_data/decoding/` |
 | Fig. 3f,g,i | Frontal and parietal decoding-error structure | `workflows/frontoparietal_coordination/render_figure_3fgi.py` | `source_data/frontoparietal_coordination/` |
 | Fig. 3h | Frontal–parietal error coordination | `workflows/frontoparietal_coordination/step5_paper_ready_figures.py` | `source_data/frontoparietal_coordination/` |
@@ -24,6 +25,7 @@ histology, photographs, and other non-computational artwork are not listed.
 | Panel | Analysis | Figure-generation code | Source data |
 |---|---|---|---|
 | ED7c | Encoding-performance distribution | `workflows/encoding_performance/render_extended_data_figure_7c.py` | `source_data/encoding_performance/` |
+| ED8a,b | Cortical distributions of high-contribution neurons for body parts, ground tilt, and eigenpostures | `workflows/contribution_maps/render_ridge_regression_maps.py` | `source_data/contribution_maps/` |
 | ED9 | Sex and calcium-indicator comparisons | `workflows/sex_indicator/render_extended_data_figure_9.py` | `source_data/sex_indicator/` |
 | ED10a–e | Neuron-count sensitivity | `workflows/decoding/build_paper_ready_assets.py` | `source_data/decoding/` |
 | ED10f–j | Shuffled-target controls | `workflows/decoding/recenter_empirical_null_figures.py` | `source_data/decoding/` |
@@ -32,7 +34,8 @@ histology, photographs, and other non-computational artwork are not listed.
 
 ## Figure-generation commands
 
-The standard profile generates Fig. 2c,d,i, Fig. 3a–g,i,l, ED7c, ED9, and ED10a–j:
+The standard profile generates Fig. 2c,d,i,k,l,n, Fig. 3a–g,i,l, ED7c, ED8a,b,
+ED9, and ED10a–j:
 
 ```powershell
 python scripts/reproduce_all.py --profile standard

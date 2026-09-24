@@ -5,6 +5,8 @@
 - Recorded-neuron locations and density: `workflows/neuron_density/render_figure_2c.py`
 - Example neural, platform, and toe traces: `workflows/example_activity/render_figure_2d.py`
 - Example encoding-model fits: `workflows/encoding_examples/render_figure_2i.py`
+- Ridge-regression contribution and neuron-density maps:
+  `workflows/contribution_maps/render_ridge_regression_maps.py`
 - Encoding-performance distribution:
   `workflows/encoding_performance/render_extended_data_figure_7c.py`
 

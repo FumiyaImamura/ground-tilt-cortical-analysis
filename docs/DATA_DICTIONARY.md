@@ -5,6 +5,9 @@ The `source_data/` directory is organized by figure-analysis family:
 - `neuron_density/`: registered neuron coordinates and density-map inputs for Fig. 2c
 - `example_activity/`: neural, platform, and toe traces plus imaging assets for Fig. 2d
 - `encoding_examples/`: observed and model-predicted traces for Fig. 2i
+- `contribution_maps/`: ridge-regression contribution maps, high-contribution-neuron
+  density maps, display masks, atlas overlay, color limits, and colormaps for
+  Fig. 2k,l,n and Extended Data Fig. 8a,b
 - `encoding_performance/`: encoding-performance values for Extended Data Fig. 7c
 - `decoding/`: regional decoding, neuron-count, and shuffled-target data for Fig. 3a–e
   and Extended Data Fig. 10a–j
