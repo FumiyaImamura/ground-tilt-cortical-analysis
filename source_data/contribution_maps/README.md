@@ -13,6 +13,10 @@ Each stack has a corresponding display mask and upper color limit. The atlas ima
 atlas alpha mask, and manuscript colormaps are included so the panel renderer does
 not depend on external files.
 
+The renderer applies the calibrated cortical-image data aspect ratio used by
+`CSP.plotScaleBar` in the original MATLAB workflow. The ratio is derived from the
+atlas pixel dimensions and physical image dimensions and is applied to every map.
+
 Run:
 
 ```powershell
