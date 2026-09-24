@@ -17,6 +17,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = REPO_ROOT / "source_data" / "neuron_density" / "figure_02c_source.mat"
 OUT_PANELS = REPO_ROOT / "outputs" / "neuron_density" / "panels"
 
+# Match the physical cortical-image calibration applied by CSP.plotScaleBar.
+# MATLAB uses daspect([(911/18.89)/(904/15.02), 1, 1]); Matplotlib's
+# corresponding numeric aspect is the same displayed y-unit/x-unit ratio.
+CORTICAL_DATA_ASPECT = (911.0 / 18.89) / (904.0 / 15.02)
+
 
 def load_source() -> dict[str, np.ndarray]:
     source = loadmat(SOURCE, squeeze_me=True)
@@ -51,7 +56,7 @@ def overlay_atlas(ax: plt.Axes, atlas_mask: np.ndarray, color: str, alpha: float
 def format_axis(ax: plt.Axes, xlim: tuple[float, float], ylim: tuple[float, float]) -> None:
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    ax.set_aspect("equal")
+    ax.set_aspect(CORTICAL_DATA_ASPECT)
     ax.set_xticks([])
     ax.set_yticks([])
     for spine in ax.spines.values():
