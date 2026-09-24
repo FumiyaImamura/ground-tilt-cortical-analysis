@@ -1,0 +1,28 @@
+# Generated figures
+outputs/*
+!outputs/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# MATLAB
+*.asv
+*.autosave
+slprj/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Local paths and large data that are not part of the public repository
+private_data/
+raw_data/
+PRIVATE_*_mapping.json

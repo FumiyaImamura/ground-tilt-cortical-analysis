@@ -1,0 +1,7 @@
+panel,outcome,outcome_label,group_variable,target_group,target_n,target_mean,target_sd,reference_group,reference_n,reference_mean,reference_sd,mean_difference_target_minus_reference,exact_two_sided_permutation_p,number_of_label_permutations,multiplicity_correction,comparison_family
+A,direction_selective_fraction,Direction-selective neurons (%),sex,female,3,3.2112796078644203,1.3611585947006901,male,7,4.1873495261094495,1.65160969709394,-0.97606991824502,0.3666666666666666,120,none,six retained outcomes
+B,decoding_p8,8DT: decoding accuracy above 3/8,sex,female,3,0.025439216859879,0.0130506140381925,male,7,0.0421664639639981,0.0189292568419465,-0.0167272471041191,0.2166666666666666,120,none,six retained outcomes
+C,decoding_rot,T-Rot: decoding accuracy above 3/8,sex,female,3,0.158203791528656,0.0781432375653381,male,7,0.1945515483180625,0.0538941465400206,-0.0363477567894064,0.4,120,none,six retained outcomes
+D,decoding_tilt,Roll decoding ($R^2$),sex,female,3,0.0637192846801059,0.0131326855875234,male,7,0.075505248882265,0.0210163248956688,-0.0117859642021591,0.4083333333333333,120,none,six retained outcomes
+E,decoding_yaw,Yaw decoding ($R^2$),sex,female,3,0.1178890437198948,0.074353594487639,male,7,0.1194926415039954,0.0580996162802103,-0.0016035977841005,0.9583333333333334,120,none,six retained outcomes
+F,decoding_zvert,Vert decoding ($R^2$),sex,female,3,0.0844789637518639,0.0375099762206306,male,7,0.0974893855921826,0.0367519852000581,-0.0130104218403187,0.5666666666666667,120,none,six retained outcomes

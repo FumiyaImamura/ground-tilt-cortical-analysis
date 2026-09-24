@@ -1,0 +1,11 @@
+name: ground-tilt-cortical-topology
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - matplotlib=3.10.5
+  - numpy=2.2.6
+  - pandas=2.3.1
+  - pillow=9.4.0
+  - scipy=1.16.0
+  - pip

@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated article and this software repository."
+title: "Ground tilt cortical analysis"
+type: software
+version: 0.1.0
+license: MIT
+authors:
+  - family-names: Imamura
+    given-names: Fumiya
+  - family-names: Imamura
+    given-names: Hiroto
+  - family-names: Hira
+    given-names: Reiko
+  - family-names: Isomura
+    given-names: Yoshikazu
+  - family-names: Hira
+    given-names: Riichiro
+preferred-citation:
+  type: article
+  title: "A cortex-wide self-consistent manifold for a body–environment reference frame"
+  authors:
+    - family-names: Imamura
+      given-names: Fumiya
+    - family-names: Imamura
+      given-names: Hiroto
+    - family-names: Hira
+      given-names: Reiko
+    - family-names: Isomura
+      given-names: Yoshikazu
+    - family-names: Hira
+      given-names: Riichiro
+  year: 2026
