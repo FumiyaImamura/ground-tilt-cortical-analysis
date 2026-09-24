@@ -35,6 +35,13 @@ class Task:
 
 TASKS = (
     Task(
+        "ridge_regression_maps",
+        "workflows/contribution_maps/render_ridge_regression_maps.py",
+        ("standard", "all"),
+        "Ridge-regression contribution and neuron-density maps",
+        "standard",
+    ),
+    Task(
         "figure_2i",
         "workflows/encoding_examples/render_figure_2i.py",
         ("standard", "all"),
