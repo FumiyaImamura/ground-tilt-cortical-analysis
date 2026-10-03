@@ -3,13 +3,13 @@
 The neuron-count panels use the paper's session-level aggregation. The ten
 neuron-sampling iterations are aggregated within hemisphere/session. Each area
 is compared with the within-session mean of the other seven areas using a
-one-sided Wilcoxon signed-rank test, Bonferroni corrected across eight areas
+two-sided Wilcoxon signed-rank test, Bonferroni corrected across eight areas
 within each motion and neuron count. MATLAB's default signrank p-value behavior
 is reproduced (exact for n <= 15; normal approximation with continuity
 correction otherwise). Error bars follow the paper's plotting convention:
 sample SD across available sessions divided by sqrt(20).
 
-The empirical-null panels use the same mouse aggregation and a paired one-sided
+The empirical-null panels use the same mouse aggregation and a two-sided
 Wilcoxon signed-rank test of real versus shuffled-target decoding, with the same
 eight-area Bonferroni family. Summary tables are written to `results/`, and
 panels are written as separate SVG and PNG files to `panels/`.
@@ -108,16 +108,16 @@ def paper_session_sem(values, total_sessions=20):
     return mean, sem, int(values.size)
 
 
-def matlab_default_signrank_greater(differences):
-    """Match MATLAB signrank(...,'tail','right') default method selection."""
+def matlab_default_signrank_two_sided(differences):
+    """Match MATLAB's default two-sided signrank method selection."""
     differences = np.asarray(differences, dtype=float)
     differences = differences[np.isfinite(differences) & (differences != 0)]
     if differences.size < 3:
         return math.nan
     if differences.size <= 15:
-        return float(wilcoxon(differences, alternative="greater", method="exact").pvalue)
+        return float(wilcoxon(differences, alternative="two-sided", method="exact").pvalue)
     return float(wilcoxon(
-        differences, alternative="greater", method="approx", correction=True,
+        differences, alternative="two-sided", method="approx", correction=False,
     ).pvalue)
 
 
@@ -195,10 +195,12 @@ for motion, title, classification, reference in MOTIONS:
                 if other:
                     contrasts.append(area[session_index] - np.mean(other))
             contrasts = np.asarray(contrasts, dtype=float)
-            raw_p = matlab_default_signrank_greater(contrasts)
+            raw_p = matlab_default_signrank_two_sided(contrasts)
             corrected_p = min(1.0, raw_p * 8) if np.isfinite(raw_p) else math.nan
-            symbol = star(corrected_p)
-            if symbol != "n.s.":
+            mean_contrast = float(np.mean(contrasts))
+            two_sided_symbol = star(corrected_p)
+            display_symbol = two_sided_symbol if mean_contrast > 0 else "n.s."
+            if display_symbol != "n.s.":
                 significant.append(DISPLAY[region])
             session_mean, session_sem, n_sessions = paper_session_sem(
                 session_by_region[region]
@@ -208,10 +210,11 @@ for motion, title, classification, reference in MOTIONS:
                 motion, title, count, DISPLAY[region], n_sessions, n_mice,
                 f"{session_mean:.8f}", f"{session_sem:.8f}",
                 f"{mouse_mean:.8f}", f"{mouse_sem:.8f}", ranks[region],
-                contrasts.size, f"{raw_p:.10f}", f"{corrected_p:.10f}", symbol,
+                contrasts.size, f"{mean_contrast:.8f}", f"{raw_p:.10f}",
+                f"{corrected_p:.10f}", two_sided_symbol, display_symbol,
             ])
             neuron_cache[(motion, count, region)] = (
-                session_mean, session_sem, symbol, corrected_p,
+                session_mean, session_sem, display_symbol, corrected_p,
             )
         neuron_summary_rows.append([
             motion, title, count,
@@ -226,8 +229,8 @@ write_csv(
     "neuron_count_stats.csv",
     ["motion_key", "motion", "neurons", "region", "n_sessions", "n_mice",
      "session_mean_delta", "session_sem", "mouse_mean_delta", "mouse_sem",
-     "rank", "contrast_n_sessions", "p_raw_one_sided_signed_rank",
-     "p_bonferroni_8", "star_bonferroni_8"],
+     "rank", "contrast_n_sessions", "mean_contrast", "p_raw_two_sided_signed_rank",
+     "p_bonferroni_8", "two_sided_star_bonferroni_8", "display_star"],
     neuron_rows,
 )
 write_csv(
@@ -253,7 +256,7 @@ for motion, title, classification, analytic_reference in MOTIONS:
         pooled_shuffle.extend(shuffle_valid.tolist())
         real_mean, real_sem, n = mean_sem(real_valid)
         shuffle_mean, shuffle_sem, _ = mean_sem(shuffle_valid)
-        raw_p = float(wilcoxon(real_valid, shuffle_valid, alternative="greater").pvalue)
+        raw_p = float(wilcoxon(real_valid, shuffle_valid, alternative="two-sided").pvalue)
         p8 = min(1.0, raw_p * 8)
         p40 = min(1.0, raw_p * 40)
         symbol = star(p8)
@@ -277,7 +280,7 @@ write_csv(
     "empirical_shuffle_stats.csv",
     ["motion_key", "motion", "region", "n_mice", "positive_mice",
      "real_mean", "real_mouse_sem", "shuffle_mean", "shuffle_mouse_sem",
-     "analytic_reference", "p_raw_paired_one_sided", "p_bonferroni_8",
+     "analytic_reference", "p_raw_two_sided_signed_rank", "p_bonferroni_8",
      "p_bonferroni_40", "star_bonferroni_8"],
     shuffle_rows,
 )

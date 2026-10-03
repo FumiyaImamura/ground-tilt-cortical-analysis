@@ -5,10 +5,11 @@ bars show the sample standard deviation of the finite session values divided
 by sqrt(20).
 
 The significance symbols are calculated from the bundled session values.
-For each motion and area, the area value is paired by session with the mean of
-the other available areas and tested with a one-sided Wilcoxon signed-rank
-test.  The eight area tests within a motion are Bonferroni-corrected.  This
-procedure is used to place the significance symbols.
+For each motion and area, the area value is compared by session with the mean
+of the other available areas using a two-sided Wilcoxon signed-rank test. The
+eight area tests within a motion are Bonferroni-corrected. The saved results
+retain every two-sided comparison, while the panel marks only areas whose mean
+contrast is positive.
 """
 
 from __future__ import annotations
@@ -85,20 +86,24 @@ def paired_region_tests(values: dict[str, np.ndarray]) -> list[dict[str, object]
         test = wilcoxon(
             target[valid],
             rest[valid],
-            alternative="greater",
+            alternative="two-sided",
             method="approx" if int(valid.sum()) >= 20 else "exact",
-            correction=True if int(valid.sum()) >= 20 else False,
+            correction=False,
         )
         raw_p = float(test.pvalue)
         corrected_p = min(1.0, 8.0 * raw_p)
+        mean_contrast = float(np.mean(target[valid] - rest[valid]))
+        two_sided_symbol = symbol(corrected_p)
         rows.append(
             {
                 "region": region,
                 "n_pairs": int(valid.sum()),
+                "mean_contrast": mean_contrast,
                 "raw_p": raw_p,
                 "bonferroni_factor": 8,
                 "corrected_p": corrected_p,
-                "symbol": symbol(corrected_p),
+                "two_sided_symbol": two_sided_symbol,
+                "display_symbol": two_sided_symbol if mean_contrast > 0 else "",
             }
         )
     return rows
@@ -125,11 +130,11 @@ def render_panel(
         error_kw={"ecolor": "0.2", "lw": 0.75, "capsize": 2},
     )
     for xi, mean, sem, row in zip(x, means, sems, tests):
-        if row["symbol"]:
+        if row["display_symbol"]:
             ax.text(
                 xi,
                 mean + sem + 0.035 * means.max(),
-                str(row["symbol"]),
+                str(row["display_symbol"]),
                 ha="center",
                 va="bottom",
                 fontsize=10,

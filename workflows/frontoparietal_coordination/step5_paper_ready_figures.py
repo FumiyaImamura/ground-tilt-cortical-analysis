@@ -96,10 +96,13 @@ def save(fig: plt.Figure, stem: str) -> None:
 
 
 def render_figure_3h(animal_probabilities: np.ndarray) -> None:
-    rows = read_csv("animal_level_stats.csv")
+    rows = read_csv("animal_level_stats_two_sided.csv")
     means = np.array([float(row["mean"]) for row in rows])
     sems = np.array([float(row["sem"]) for row in rows])
-    corrected = np.array([float(row["wilcoxon_p_bonf"]) for row in rows])
+    corrected = np.array([
+        float(row["wilcoxon_two_sided_p_bonferroni_8"])
+        for row in rows
+    ])
     means9 = duplicate_endpoint(means)
     sems9 = duplicate_endpoint(sems)
 
@@ -127,15 +130,17 @@ def render_figure_3h(animal_probabilities: np.ndarray) -> None:
         zorder=3,
     )
     ax.axhline(CHANCE, color="black", ls=(0, (3, 3)), lw=0.55, zorder=0)
-    zero_position = 4
-    ax.text(
-        zero_position,
-        means9[zero_position] + sems9[zero_position] + 0.012,
-        significance_text(corrected[zero_position]),
-        ha="center",
-        va="bottom",
-        fontsize=8,
-    )
+    for index, p_value in enumerate(corrected):
+        marker = significance_text(p_value)
+        if marker and means9[index] > CHANCE:
+            ax.text(
+                index,
+                means9[index] + sems9[index] + 0.008,
+                marker,
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
     ax.set_ylim(0, 0.325)
     style_histogram_axis(ax)
     panel_label(ax, "h")
@@ -143,11 +148,11 @@ def render_figure_3h(animal_probabilities: np.ndarray) -> None:
 
 
 def render_extended_data_10k() -> None:
-    rows = read_csv("independence_null_one_sided.csv")
+    rows = read_csv("independence_null_two_sided.csv")
     excess = np.array([float(row["excess_mean"]) for row in rows])
     excess_sem = np.array([float(row["excess_sem"]) for row in rows])
     corrected = np.array([
-        float(row["wilcoxon_one_sided_greater_p_bonferroni_8"])
+        float(row["wilcoxon_two_sided_p_bonferroni_8"])
         for row in rows
     ])
     excess9 = duplicate_endpoint(excess)
@@ -176,13 +181,15 @@ def render_extended_data_10k() -> None:
     ax.set_ylim(-0.032, 0.092)
     for index, p_value in enumerate(corrected):
         marker = significance_text(p_value)
-        if marker:
+        if marker and excess9[index] > 0:
+            y = excess9[index] + sem9[index] + 0.006
+            va = "bottom"
             ax.text(
                 index,
-                excess9[index] + sem9[index] + 0.006,
+                y,
                 marker,
                 ha="center",
-                va="bottom",
+                va=va,
                 fontsize=8,
             )
     style_histogram_axis(ax, ylabel="Δ Probability")

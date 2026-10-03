@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import csv
 
 import matplotlib
 
@@ -10,6 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import loadmat
+from scipy.stats import wilcoxon
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -23,12 +25,7 @@ SOURCES = {
     "Posture": ("eigen_posture_1.mat", "delta_R2_axis_plane"),
 }
 
-# Significance annotations shown in Figure 3l.
-SIGNIFICANCE_MARKERS = {
-    "Movement": {1: "**"},
-    "Tilt": {1: "*", 2: "**", 3: "*"},
-    "Posture": {1: "*", 2: "*", 3: "*"},
-}
+BONFERRONI_FAMILY = 10
 
 YLIMS = {
     "Movement": (-0.015, 0.43),
@@ -57,6 +54,65 @@ def load_values() -> dict[str, np.ndarray]:
             raise ValueError(f"{filename}: expected shape (10, 20), found {values.shape}")
         result[title] = values
     return result
+
+
+def significance_symbol(p_value: float) -> str:
+    if p_value < 0.001:
+        return "**"
+    if p_value < 0.05:
+        return "*"
+    return ""
+
+
+def matlab_default_two_sided_signrank(values: np.ndarray) -> float:
+    """Match MATLAB's default two-sided signrank method at each sample size."""
+    values = np.asarray(values, dtype=float)
+    values = values[np.isfinite(values) & (values != 0)]
+    method = "exact" if values.size <= 15 else "approx"
+    return float(
+        wilcoxon(
+            values,
+            alternative="two-sided",
+            method=method,
+            correction=False,
+        ).pvalue
+    )
+
+
+def component_tests(
+    values: dict[str, np.ndarray],
+) -> tuple[dict[str, dict[int, str]], list[dict[str, object]]]:
+    markers: dict[str, dict[int, str]] = {}
+    rows: list[dict[str, object]] = []
+    for title, matrix in values.items():
+        markers[title] = {}
+        for component, component_values in enumerate(matrix, start=1):
+            raw_p = matlab_default_two_sided_signrank(component_values)
+            corrected_p = min(1.0, raw_p * BONFERRONI_FAMILY)
+            marker = significance_symbol(corrected_p)
+            if marker:
+                markers[title][component] = marker
+            rows.append(
+                {
+                    "target": title,
+                    "component": component,
+                    "n_sessions": int(np.isfinite(component_values).sum()),
+                    "p_raw_two_sided_signed_rank": raw_p,
+                    "p_bonferroni_10": corrected_p,
+                    "significance_symbol": marker or "n.s.",
+                }
+            )
+    return markers, rows
+
+
+def write_tests(rows: list[dict[str, object]]) -> None:
+    OUT_RESULTS.mkdir(parents=True, exist_ok=True)
+    with (OUT_RESULTS / "figure_03l_component_tests.csv").open(
+        "w", encoding="utf-8", newline=""
+    ) as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def plot_panel(
@@ -131,14 +187,15 @@ def render_combined(
 
 def main() -> int:
     values = load_values()
+    markers, test_rows = component_tests(values)
     stems = {
         "Movement": "figure_03l_movement",
         "Tilt": "figure_03l_tilt",
         "Posture": "figure_03l_posture",
     }
     for title, matrix in values.items():
-        render_panel(title, matrix, stems[title], SIGNIFICANCE_MARKERS)
-    render_combined(values, SIGNIFICANCE_MARKERS, "figure_03l")
+        render_panel(title, matrix, stems[title], markers)
+    render_combined(values, markers, "figure_03l")
 
     OUT_RESULTS.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
@@ -147,6 +204,7 @@ def main() -> int:
         ground_tilt=values["Tilt"],
         eigenposture_1=values["Posture"],
     )
+    write_tests(test_rows)
     print(f"Wrote Figure 3l panels to {OUT_PANELS}")
     return 0
 

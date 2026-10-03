@@ -117,10 +117,10 @@ def prepare_results():
             ])
             contrast_errors.extend(np.abs((r_centered - s_centered) - (r - s)))
             sem_errors.extend([abs(sem(r_centered) - sem(r)), abs(sem(s_centered) - sem(s))])
-            p_raw = float(wilcoxon(r, s, alternative="greater").pvalue)
-            p_centered = float(wilcoxon(r_centered, s_centered, alternative="greater").pvalue)
+            p_raw = float(wilcoxon(r, s, alternative="two-sided").pvalue)
+            p_centered = float(wilcoxon(r_centered, s_centered, alternative="two-sided").pvalue)
             p_errors.append(abs(p_centered - p_raw))
-            saved_p_errors.append(abs(p_raw - float(original["p_raw_paired_one_sided"])))
+            saved_p_errors.append(abs(p_raw - float(original["p_raw_two_sided_signed_rank"])))
             p8 = min(1.0, 8 * p_centered)
             p40 = min(1.0, 40 * p_centered)
             assert abs(p8 - float(original["p_bonferroni_8"])) < 5.1e-11
@@ -138,7 +138,7 @@ def prepare_results():
                 "shuffle_mean_centered": float(np.mean(s_centered)),
                 "shuffle_mouse_sem": sem(s_centered),
                 "analytic_reference_raw": analytic, "analytic_reference_centered": analytic - offset,
-                "p_raw_paired_one_sided": p_centered, "p_bonferroni_8": p8,
+                "p_raw_two_sided_signed_rank": p_centered, "p_bonferroni_8": p8,
                 "p_bonferroni_40": p40, "star_bonferroni_8": symbol,
             })
             for mouse, rv, sv, rc, sc in zip(mice, r, s, r_centered, s_centered):
@@ -255,7 +255,7 @@ def build_figures(rows, output_dir):
             Patch(facecolor=SHUFFLE_COLOR, edgecolor="0.2", label="Shuffle"),
         ], frameon=False, loc="upper center", fontsize=9)
         axes[5].text(0.5, 0.35,
-                     "Asterisks: real > shuffle,\none-sided paired Wilcoxon\nsigned-rank tests; Bonferroni\nx8 within motion",
+                     "Asterisks: Wilcoxon signed-rank\ntests with Bonferroni correction",
                      ha="center", va="center", fontsize=8.5, linespacing=1.4, transform=axes[5].transAxes)
         fig.subplots_adjust(left=0.10, right=0.98, top=0.96, bottom=0.08, hspace=0.55, wspace=0.32)
         for extension in ("svg", "png"):

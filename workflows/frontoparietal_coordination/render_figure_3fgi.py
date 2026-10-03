@@ -13,7 +13,7 @@ with equal weight.
 
 Figure 3i uses the same saved trial-level predictions.  The joint distribution
 of frontal and parietal decoding offsets is shown after
-subtracting the product of its marginals.  One-sided binomial tests compare
+subtracting the product of its marginals. Two-sided binomial tests compare
 each observed joint-bin count with its independence probability, followed by
 Bonferroni correction across the 64 bins.
 """
@@ -159,7 +159,7 @@ def joint_excess_and_pvalues(
                 int(counts[row, column]),
                 total,
                 float(expected[row, column]),
-                alternative="greater",
+                alternative="two-sided",
             ).pvalue
     p_bonferroni = np.minimum(1.0, p_raw * 64)
     return counts, joint, expected, excess, p_bonferroni, total
@@ -167,7 +167,10 @@ def joint_excess_and_pvalues(
 
 def render_joint_panel(excess: np.ndarray, p_bonferroni: np.ndarray) -> None:
     ordered_excess = excess[np.ix_(PLOT_ORDER, PLOT_ORDER)]
-    ordered_sig = p_bonferroni[np.ix_(PLOT_ORDER, PLOT_ORDER)] < 1e-3
+    ordered_sig = (
+        (p_bonferroni[np.ix_(PLOT_ORDER, PLOT_ORDER)] < 1e-3)
+        & (ordered_excess > 0)
+    )
     excess9 = duplicate_circular_endpoint(ordered_excess)
     sig9 = duplicate_circular_endpoint(ordered_sig.astype(int))
 

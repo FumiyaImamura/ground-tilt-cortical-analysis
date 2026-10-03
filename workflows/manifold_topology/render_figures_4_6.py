@@ -585,7 +585,7 @@ def render_figure_4pq() -> dict[str, object]:
         for motion in MOTION_NAMES
     }
     raw_p = [
-        stats.wilcoxon(normalized[motion][index], np.ones(session_count), alternative="less").pvalue
+        stats.wilcoxon(normalized[motion][index], np.ones(session_count), alternative="two-sided").pvalue
         for motion in MOTION_NAMES for index in range(1, len(W2))
     ]
     adjusted = bonferroni(raw_p)
@@ -594,7 +594,7 @@ def render_figure_4pq() -> dict[str, object]:
         for motion in MOTION_NAMES
     }
     slope_adjusted = bonferroni([
-        stats.wilcoxon(slopes["zvert"], slopes[motion], alternative="less").pvalue
+        stats.wilcoxon(slopes["zvert"], slopes[motion], alternative="two-sided").pvalue
         for motion in ("rot", "p8")
     ])
 
@@ -626,7 +626,7 @@ def render_figure_4pq() -> dict[str, object]:
     for motion in ("rot", "p8"):
         values = ellipse[:, :, motions.index(motion), 1].T
         for index in range(1, len(W2)):
-            raw.append(stats.wilcoxon(values[index], values[0], alternative="less").pvalue)
+            raw.append(stats.wilcoxon(values[index], values[0], alternative="two-sided").pvalue)
             keys.append((motion, index))
     adjusted_map = dict(zip(keys, bonferroni(raw)))
     fig, axes = plt.subplots(1, 2, figsize=(3.9, 1.95))
@@ -750,7 +750,7 @@ def render_figure_5df() -> dict[str, object]:
                 second = values[index, motions.index("zvert")]
                 if use_log:
                     first, second = np.log(first), np.log(second)
-                raw.append(stats.wilcoxon(first, second, alternative="greater").pvalue)
+                raw.append(stats.wilcoxon(first, second, alternative="two-sided").pvalue)
                 keys.append((motion, index))
         adjusted = dict(zip(keys, bonferroni(raw)))
 
@@ -930,10 +930,11 @@ def render_figure_6b() -> dict[str, object]:
     labels = {"AllAreas": "All areas", "PPC": "PPC", "S1": "S1", "M1M2": "M1 + M2"}
     lri = np.stack([entry["lri"] for entry in loaded])
     delta = lri[:, :, 0] - lri[:, :, 1]
-    adjusted = bonferroni([
-        stats.wilcoxon(delta[np.isfinite(delta[:, index]), index], alternative="greater").pvalue
+    raw_p = np.asarray([
+        stats.wilcoxon(delta[np.isfinite(delta[:, index]), index], alternative="two-sided").pvalue
         for index in range(len(regions))
     ])
+    adjusted = np.concatenate(([raw_p[0]], bonferroni(raw_p[1:])))
     plt.rcParams.update({
         "font.family": "sans-serif", "font.sans-serif": ["Arial", "DejaVu Sans"],
         "font.size": 7, "axes.labelsize": 7.5, "xtick.labelsize": 6.5,
@@ -967,6 +968,10 @@ def render_figure_6b() -> dict[str, object]:
         "means": dict(zip(regions, map(float, means))),
         "sem": dict(zip(regions, map(float, errors))),
         "adjusted_p_values": dict(zip(regions, map(float, adjusted))),
+        "correction": {
+            "AllAreas": "separate whole-cortex reference",
+            "PPC_S1_M1M2": "Bonferroni across three regional comparisons",
+        },
         "panels": 1,
     }
 
@@ -984,7 +989,7 @@ def render_figure_6c() -> dict[str, object]:
         current = values[:, active_index, index, :].T
         baseline = np.median(current, axis=0)
         adjusted = bonferroni([
-            stats.wilcoxon(current[dimension] - baseline, alternative="greater").pvalue
+            stats.wilcoxon(current[dimension] - baseline, alternative="two-sided").pvalue
             for dimension in range(current.shape[0])
         ])
         mean = np.nanmean(current, axis=1)
@@ -994,7 +999,8 @@ def render_figure_6c() -> dict[str, object]:
         ax.set_ylim(0, float(max(mean + error)) * 1.28)
         for dimension in range(current.shape[0]):
             label = stars(float(adjusted[dimension]))
-            if label != "n.s.":
+            mean_contrast = float(np.nanmean(current[dimension] - baseline))
+            if label != "n.s." and mean_contrast > 0:
                 ax.text(x[dimension], mean[dimension] + error[dimension] + 0.035 * ax.get_ylim()[1], label, ha="center", fontsize=7.5)
         ax.set_xticks(x)
         ordinal = "3rd" if component_count == 3 else "5th"

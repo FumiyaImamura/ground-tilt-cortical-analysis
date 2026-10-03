@@ -60,7 +60,7 @@ def corrected_tests(
     motion_indices: dict[str, int],
     tested_w2: tuple[int, ...],
 ) -> dict[tuple[str, int], float]:
-    """One-sided paired Wilcoxon tests versus Vert with panel-wise Bonferroni."""
+    """Two-sided Wilcoxon signed-rank tests versus Vert with panel-wise Bonferroni."""
 
     raw: list[float] = []
     keys: list[tuple[str, int]] = []
@@ -71,7 +71,7 @@ def corrected_tests(
             x = values[wi, :, mi]
             y = values[wi, :, vert]
             valid = np.isfinite(x) & np.isfinite(y)
-            raw.append(float(wilcoxon(x[valid], y[valid], alternative="greater").pvalue))
+            raw.append(float(wilcoxon(x[valid], y[valid], alternative="two-sided").pvalue))
             keys.append((motion, wi))
     adjusted = np.minimum(np.asarray(raw) * len(raw), 1.0)
     return dict(zip(keys, adjusted, strict=True))
