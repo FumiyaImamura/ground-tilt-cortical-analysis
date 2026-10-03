@@ -1,6 +1,6 @@
 """Helper functions for the 3-D cPCA/gcPCA trajectories in Fig. 4d-h and 4j-n.
 
-Imported by fig4dn_active_paper_style.py. gcPCA uses 8DT as condition 1 and Vert as
+Imported by population_trajectories.py. gcPCA uses 8DT as condition 1 and Vert as
 condition 2 with w1 = 0.5. Trajectories are averaged over interleaved groups of
 approximately NTRI trials.
 """

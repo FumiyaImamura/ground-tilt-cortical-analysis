@@ -1,0 +1,12 @@
+#!/bin/bash
+#$ -cwd
+#$ -l cpu_160=1
+#$ -l h_rt=1:00:00
+#$ -t 1-20   # Array job with task IDs 1 to 20
+#$ -o /path/to/logs/ridge_body_part_ablation.$TASK_ID.o
+#$ -e /path/to/logs/ridge_body_part_ablation.$TASK_ID.e
+
+module load matlab
+
+# Run MATLAB without display, using a separate preferences directory
+matlab -nodisplay -r "ridge_body_part_ablation; exit"

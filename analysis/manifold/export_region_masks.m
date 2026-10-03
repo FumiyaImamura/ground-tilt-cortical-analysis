@@ -1,6 +1,6 @@
 % Export the registered ROI masks of the eight cortical regions used by the
 % Fig. 6b analysis (BrainRegions_with_RSC.mat) to region_masks_with_RSC.mat.
-% Save the file in the results folder that fig6b_regional_lri.py reads
+% Save the file in the results folder that regional_lri.py reads
 % (analysis/results).
 
 path2functions        = '/path/to/matlab_helpers';

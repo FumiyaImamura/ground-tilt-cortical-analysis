@@ -1,7 +1,7 @@
 """Render Figure 3f, 3g, and 3i from the bundled decoder predictions.
 
 The input is the compact MATLAB result saved by
-``TB_classi_cPCA_20250706_analysis.m``.  It contains the true and decoded
+``analysis/frontoparietal/collect_decoded_directions.m``. It contains the true and decoded
 directions for the frontal and parietal populations at four cPCA weights.
 The manuscript uses weight 0.5.
 

@@ -1,6 +1,6 @@
 """Statistics for Fig. 2f,g from the saved direction-selectivity results.
 
-Reads the file written by DirectionSelectivity_20260327.m and selects the
+Reads the file written by direction_selectivity.m and selects the
 direction-selective neurons (activity skewness > 0.5, ANOVA p < 0.05 and direction
 selectivity score > 0.1).
 
