@@ -1,17 +1,20 @@
 # Ground tilt cortical analysis
 
-This repository contains figure-generation code and compact source data for selected
-quantitative panels in *A cortex-wide self-consistent manifold for a body–environment
-reference frame*.
+This repository contains analysis scripts, figure-generation code and compact source
+data for selected quantitative panels in *A cortex-wide self-consistent manifold for a
+body–environment reference frame*.
 
 The included workflows generate panels from Figures 2–6 and Extended Data Figures
 7–11. They cover example neural activity, encoding, ridge-regression contribution
-maps, regional decoding,
-frontal–parietal coordination, shared population components, manifold geometry,
-persistent homology, and region-restricted analyses.
+maps, regional decoding, frontal–parietal coordination, shared population components,
+manifold geometry, persistent homology, and region-restricted analyses.
 
 ## Repository contents
 
+- `analysis/`: analysis scripts for direction selectivity, the encoding models,
+  regional and frontal–parietal decoding, GCARP, single-neuron responses, cPCA/gcPCA
+  trajectories, persistent homology and LRI, with shared helper functions and cluster
+  job scripts. See [`analysis/README.md`](analysis/README.md).
 - `source_data/`: compact numerical data used by the included figure workflows
 - `workflows/`: figure-generation code organized by analysis family
 - `scripts/reproduce_all.py`: entry point for generating the included panels

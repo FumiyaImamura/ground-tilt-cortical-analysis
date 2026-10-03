@@ -2,6 +2,10 @@
 outputs/*
 !outputs/.gitkeep
 
+# Results and figures written by the analysis scripts
+analysis/results/
+analysis/figures/
+
 # Python
 __pycache__/
 *.py[cod]

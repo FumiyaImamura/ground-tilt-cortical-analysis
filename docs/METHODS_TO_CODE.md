@@ -1,5 +1,9 @@
 # Analysis-to-code crosswalk
 
+The scripts below generate the figure panels from `source_data/`. The analysis scripts
+that computed the single-neuron, encoding, decoding, GCARP and manifold results are
+described in [`analysis/README.md`](../analysis/README.md).
+
 ## Example neuronal activity and encoding
 
 - Recorded-neuron locations and density: `workflows/neuron_density/render_figure_2c.py`

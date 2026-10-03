@@ -1,0 +1,12 @@
+# Python packages for the analysis scripts in this folder (Python 3.11).
+# Versions are those of the environment in which the scripts were run.
+# The figure-rendering environments are defined separately in ../environment.
+numpy==2.2.6
+scipy==1.16.0
+matplotlib==3.10.5
+scikit-learn==1.7.0
+ripser==0.6.12
+# Optional: used only by some functions in helpers/python/utility_functions.py
+# pillow==9.4.0
+# shapely==2.1.1
+# imageio
